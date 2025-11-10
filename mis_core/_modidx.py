@@ -5,4 +5,5 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://MIS-Analytics.github.io',
                 'git_url': 'https://github.com/MIS-Analytics/mis_core',
                 'lib_path': 'mis_core'},
-  'syms': {'mis_core.core': {'mis_core.core.foo': ('core.html#foo', 'mis_core/core.py')}}}
+  'syms': { 'mis_core.core': { 'mis_core.core.foo': ('core.html#foo', 'mis_core/core.py'),
+                               'mis_core.core.move_columns': ('core.html#move_columns', 'mis_core/core.py')}}}
