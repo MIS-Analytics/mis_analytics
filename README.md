@@ -26,6 +26,100 @@ $ nbdev_prepare
 
 ## Usage
 
+``` python
+df = get_demo_data()
+df
+```
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+&#10;    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+&#10;    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+|     | order_id | product  | quantity | defects | production_time |
+|-----|----------|----------|----------|---------|-----------------|
+| 0   | 101      | Widget A | 50       | 2       | 120             |
+| 1   | 102      | Widget B | 30       | 1       | 95              |
+| 2   | 103      | Widget A | 75       | 3       | 150             |
+| 3   | 104      | Widget C | 20       | 0       | 80              |
+| 4   | 105      | Widget B | 45       | 2       | 110             |
+
+</div>
+
+``` python
+@track
+def aggregate_by_product(df):
+    return df.groupby(["product"])[["quantity", "defects", "production_time"]].sum()
+```
+
+``` python
+@track
+def filter_products(df):
+    return df[df["product"] != "Widget C"]
+```
+
+``` python
+steps = [
+    (filter_products, {'vrbs':True}),
+    (aggregate_by_product, {}),
+]
+```
+
+``` python
+_df = pipeline(df, steps, vrbs_default=False)
+```
+
+    *************** filter_products ***************
+    Total Time: 1.75 ms
+
+    Start: 2025-12-18 16:05:55.759474
+      End: 2025-12-18 16:05:55.761225
+
+    Input DataFrame:
+      order_id   product quantity defects production_time
+    0      101  Widget A       50       2             120
+    1      102  Widget B       30       1              95
+    2      103  Widget A       75       3             150
+             :         :        :       :               :
+    3      104  Widget C       20       0              80
+    1      102  Widget B       30       1              95
+    4      105  Widget B       45       2             110
+    0      101  Widget A       50       2             120
+    2      103  Widget A       75       3             150
+             :         :        :       :               :
+    2      103  Widget A       75       3             150
+    3      104  Widget C       20       0              80
+    4      105  Widget B       45       2             110
+
+            Input:   5 rows, 5 cols
+                         ↓       ↓
+            Diff:   -1 rows, 0 cols
+                         ↓       ↓
+            Output:  4 rows, 5 cols
+            
+    Output DataFrame:
+      order_id   product quantity defects production_time
+    0      101  Widget A       50       2             120
+    1      102  Widget B       30       1              95
+    2      103  Widget A       75       3             150
+             :         :        :       :               :
+    4      105  Widget B       45       2             110
+    0      101  Widget A       50       2             120
+    2      103  Widget A       75       3             150
+    1      102  Widget B       30       1              95
+             :         :        :       :               :
+    1      102  Widget B       30       1              95
+    2      103  Widget A       75       3             150
+    4      105  Widget B       45       2             110
+
 ### Installation
 
 Install latest from the GitHub
