@@ -8,7 +8,10 @@ __all__ = ['get_demo_data', 'format_timedelta', 'print_step_name', 'print_time',
            'print_step_info', 'pipeline', 'track']
 
 # %% ../nbs/10_etl.ipynb #521339ed
+import numpy as np
 import pandas as pd
+from datetime import datetime, timedelta
+from time import sleep
 
 # %% ../nbs/10_etl.ipynb #9edadacc
 def get_demo_data():
@@ -21,12 +24,9 @@ def get_demo_data():
     }
     return pd.DataFrame(data)
 
-# %% ../nbs/10_etl.ipynb #1b211034
+# %% ../nbs/10_etl.ipynb #fdb3d687
 from datetime import datetime
 from time import sleep
-
-# %% ../nbs/10_etl.ipynb #7dc37760
-from datetime import timedelta
 
 # %% ../nbs/10_etl.ipynb #1d9df13f
 def format_timedelta(td):
@@ -46,9 +46,6 @@ def print_time(meta_dict):
     print('')
     print(f'Start: {meta_dict["in_time"]}')
     print(f'  End: {meta_dict["out_time"]}')
-
-# %% ../nbs/10_etl.ipynb #52cd3087
-import numpy as np
 
 # %% ../nbs/10_etl.ipynb #f6b9028a
 def fill_between_df_parts(df):
@@ -98,7 +95,8 @@ def print_shape_change(meta_dict):
         Diff:   {diff_rows_str:>{row_width}} rows, {diff_cols_str:>{col_width}} cols
                 {' '*row_width}   ↓   {' '*col_width}   ↓
         Output: {out_rows:>{row_width}} rows, {out_cols:>{col_width}} cols
-        """)
+        """
+        )
 
 # %% ../nbs/10_etl.ipynb #b54a0d7b
 def print_step_info(meta_dict):

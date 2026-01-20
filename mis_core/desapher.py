@@ -4,15 +4,12 @@
 
 # %% auto #0
 __all__ = ['sap_to_pandas_dtype', 'get_sap_table_structure', 'get_sap_table_url', 'get_sap_tables_structure',
-           'get_sap_table_description', 'convert_sap_types', 'rename_sap_columns', 'clean_string', 'clean_col_names']
+           'get_sap_table_description', 'convert_sap_types', 'rename_sap_columns']
 
 # %% ../nbs/11_deSAPher.ipynb #ce7b0158
+from .core import *
 import httpx
-
-# %% ../nbs/11_deSAPher.ipynb #cebc8c27
 from bs4 import BeautifulSoup
-
-# %% ../nbs/11_deSAPher.ipynb #ab08e27c
 import pandas as pd
 
 # %% ../nbs/11_deSAPher.ipynb #54659ed4
@@ -206,15 +203,3 @@ def rename_sap_columns(df: pd.DataFrame, sap_sheet: pd.DataFrame) -> pd.DataFram
     sap_sheet = sap_sheet.rename(columns=lambda x: x.strip())
     column_name_mapping = sap_sheet.set_index("Field")["Short Description"].to_dict()
     return df.rename(columns=lambda col: column_name_mapping.get(col, col))
-
-# %% ../nbs/11_deSAPher.ipynb #6665a0a6
-def clean_string(input_string:str):
-    """Cleans input_string"""
-    processed_string = "".join(c if c.isalnum() else "_" for c in input_string.lower()).strip("_")
-    return "_".join(filter(None, processed_string.split("_")))
-
-# %% ../nbs/11_deSAPher.ipynb #42fbc615
-def clean_col_names(df):
-    """Returns df with clean column names by using `clean_string` on each column name."""
-    df.columns = [clean_string(col.lower()) for col in df.columns]
-    return df
