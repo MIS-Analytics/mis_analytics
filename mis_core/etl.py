@@ -5,13 +5,14 @@
 # %% auto #0
 __all__ = ['get_demo_data', 'format_timedelta', 'print_step_name', 'print_time', 'fill_between_df_parts',
            'print_sample_from_meta_dict', 'display_sample_from_df', 'space_strings', 'print_shape_change',
-           'print_step_info', 'pipeline', 'track']
+           'print_step_description', 'print_step_info', 'pipeline', 'track']
 
 # %% ../nbs/10_etl.ipynb #521339ed
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 from time import sleep
+from functools import wraps
 
 # %% ../nbs/10_etl.ipynb #9edadacc
 def get_demo_data():
@@ -98,9 +99,14 @@ def print_shape_change(meta_dict):
         """
         )
 
+# %% ../nbs/10_etl.ipynb #1d6f27bd
+def print_step_description(meta_dict): print(f"'''{meta_dict['step_description']}'''")
+
 # %% ../nbs/10_etl.ipynb #b54a0d7b
 def print_step_info(meta_dict):
     print_step_name(meta_dict)
+    print_step_description(meta_dict)
+    print('\n')
     print_time(meta_dict)
     print("\nInput DataFrame:")
     print_sample_from_meta_dict(meta_dict, mode='in')
@@ -120,9 +126,11 @@ def pipeline(df, steps, vrbs_default=True):
 
 # %% ../nbs/10_etl.ipynb #e880e756
 def track(func):
+    @wraps(func)
     def wrapper(in_df, vrbs=False, *args, **kwargs):
         meta_dict = {
             'step_name':func.__name__, # name of the pipeline step
+            'step_description':func.__doc__, # description based on docstring
             'in_time':datetime.now(), # time when the pipeline step starts
             'in_df_shape':in_df.shape, # shape of the input dataframe
             'in_df_head':in_df.head(3), # head of the input dataframe
