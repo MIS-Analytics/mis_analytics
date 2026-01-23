@@ -184,7 +184,7 @@ def convert_sap_types(df: pd.DataFrame, sap_sheet: pd.DataFrame) -> pd.DataFrame
                 elif pandas_dtype == "float64": df[column] = pd.to_numeric(df[column], errors="coerce")
                 elif pandas_dtype == "int16": df[column] = pd.to_numeric(df[column], errors="coerce").astype("Int16")
                 elif pandas_dtype == "int32": df[column] = pd.to_numeric(df[column], errors="coerce").astype("Int32")
-                elif pandas_dtype == "bytes": df[column] = df[column].astype("string").apply(lambda x: x.encode() if pd.notna(x) else None)
+                elif pandas_dtype == "bytes": df[column] = df[column].astype("str").apply(lambda x: x.encode() if pd.notna(x) else None)
                 else: df[column] = df[column].astype(pandas_dtype)
             except Exception as e:
                 print(f"Error converting column {column} to {pandas_dtype}: {e}")
