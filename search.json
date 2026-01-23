@@ -1,0 +1,212 @@
+[
+  {
+    "objectID": "etl.html",
+    "href": "etl.html",
+    "title": "ETL",
+    "section": "",
+    "text": "We want to try to build up some functionality to create etl pipelines for pandas operations. We want to define classic extract, transform and load functions which we can string together in a pipeline. We would also like to add some functionality to inspect the intermediate dataframes and some key properties.",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "etl.html#our-plan",
+    "href": "etl.html#our-plan",
+    "title": "ETL",
+    "section": "",
+    "text": "We want to try to build up some functionality to create etl pipelines for pandas operations. We want to define classic extract, transform and load functions which we can string together in a pipeline. We would also like to add some functionality to inspect the intermediate dataframes and some key properties.",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "etl.html#our-background",
+    "href": "etl.html#our-background",
+    "title": "ETL",
+    "section": "Our background",
+    "text": "Our background\nWe work as Data Science Consultants mainly with SME’s in manufacturing. We often have to build up etl pipelines from various sources to then use for analytics or ML workloads. The pipelines can get pretty complex with custom business logic, that why we want to have a way to quickly show all the steps we take.\n\n# Sample manufacturing data\ndata = {\n    'order_id': [101, 102, 103, 104, 105],\n    'product': ['Widget A', 'Widget B', 'Widget A', 'Widget C', 'Widget B'],\n    'quantity': [50, 30, 75, 20, 45],\n    'defects': [2, 1, 3, 0, 2],\n    'production_time': [120, 95, 150, 80, 110]  # in minutes\n}\n\ndf = pd.DataFrame(data)\ndf\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n\n\n\n\n\n\nsource\n\nget_demo_data\n\ndef get_demo_data(\n    \n):\n\n\ndf[df[\"product\"] != \"Widget C\"].groupby([\"product\"])[[\"quantity\", \"defects\" ,\"production_time\"]].sum()\n\n\n\n\n\n\n\n\nquantity\ndefects\nproduction_time\n\n\nproduct\n\n\n\n\n\n\n\nWidget A\n125\n5\n270\n\n\nWidget B\n75\n3\n205",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "etl.html#print-name-and-time",
+    "href": "etl.html#print-name-and-time",
+    "title": "ETL",
+    "section": "print name and time",
+    "text": "print name and time\n\nprint(15*'*' + ' ' + step_meta.step_name + ' ' + 15*'*')\n\n*************** filter_products ***************\n\n\n\nprint(f'Total Time: {step_meta.total_time}')\nprint(f'Start: {step_meta.in_time}')\nprint(f'End: {step_meta.out_time}')\n\nTotal Time: 0:00:00.001287\nStart: 2026-01-21 15:36:59.108163\nEnd: 2026-01-21 15:36:59.108396\n\n\n\nsource\n\nformat_timedelta\n\ndef format_timedelta(\n    td\n):\n\n\nprint(f'Total Time: {format_timedelta(step_meta.total_time)}')\n\nTotal Time: 1.29 ms\n\n\n\nsource\n\n\nprint_step_name\n\ndef print_step_name(\n    step_meta:StepMeta\n):\n\n\nprint_step_name(step_meta)\n\n*************** filter_products ***************\n\n\n\nsource\n\n\nprint_time\n\ndef print_time(\n    step_meta:StepMeta\n):\n\n\nprint_time(step_meta)\n\nTotal Time: 1.29 ms\n\nStart: 2026-01-21 15:36:59.108163\n  End: 2026-01-21 15:36:59.108396",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "etl.html#print-sample-df",
+    "href": "etl.html#print-sample-df",
+    "title": "ETL",
+    "section": "print sample df",
+    "text": "print sample df\n\npd.concat([step_meta.in_df_head, step_meta.in_df_sample, step_meta.in_df_tail])\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n\n\n\n\n\n\npd.DataFrame(np.nan, index=range(1), columns=step_meta.in_df_head.columns)\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\nNaN\nNaN\nNaN\nNaN\nNaN\n\n\n\n\n\n\n\n\npd.DataFrame(np.nan, index=range(1), columns=step_meta.in_df_head.columns).fillna('...')\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n...\n...\n...\n...\n...\n\n\n\n\n\n\n\n\npd.DataFrame(np.nan, index=range(3), columns=meta_dict['in_df_head'].columns).fillna('.')\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n.\n.\n.\n.\n.\n\n\n1\n.\n.\n.\n.\n.\n\n\n2\n.\n.\n.\n.\n.\n\n\n\n\n\n\n\n\npd.DataFrame(np.nan, index=range(1), columns=step_meta.in_df_head.columns).fillna(':')\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n:\n:\n:\n:\n:\n\n\n\n\n\n\n\n\nsource\n\nfill_between_df_parts\n\ndef fill_between_df_parts(\n    df\n):\n\n\nfill_between_df_parts(meta_dict['in_df_head'])\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n\n:\n:\n:\n:\n:\n\n\n\n\n\n\n\n\npd.concat(\n    [step_meta.in_df_head, \n    fill_between_df_parts(step_meta.in_df_head),\n    step_meta.in_df_sample, \n    fill_between_df_parts(step_meta.in_df_head),\n    step_meta.in_df_tail]\n    )\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n\n:\n:\n:\n:\n:\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n\n:\n:\n:\n:\n:\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n\n\n\n\n\nWe want to build to functions: 1. a display function for within our wrapper which only uses the meta_dict 2. a display function that just takes in one df and gets the head, sample, tail from there\nIn the future we might want to turn this into one function but for now we don’t want to store the whole df in meta_dict\n\nsource\n\n\nprint_sample_from_meta_dict\n\ndef print_sample_from_meta_dict(\n    step_meta:StepMeta, mode:str='in'\n):\n\n\nprint_sample_from_meta_dict(step_meta)\n\n  order_id   product quantity defects production_time\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n3      104  Widget C       20       0              80\n4      105  Widget B       45       2             110\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n2      103  Widget A       75       3             150\n3      104  Widget C       20       0              80\n4      105  Widget B       45       2             110\n\n\n\nsource\n\n\ndisplay_sample_from_df\n\ndef display_sample_from_df(\n    df\n):\n\n\ndisplay_sample_from_df(df)\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n\n:\n:\n:\n:\n:\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n\n:\n:\n:\n:\n:\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n\n\n\n\n\nWe will have to also consider what happen if we have to many columns.\nOur idea is to truncate them as well and just add a dummy columns with ‘…’ as sign that its truncated",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "etl.html#print-shape-and-shape-change",
+    "href": "etl.html#print-shape-and-shape-change",
+    "title": "ETL",
+    "section": "print shape and shape change",
+    "text": "print shape and shape change\n\nprint('(rows, columns) =', step_meta.in_df_shape)\nprint('        |          ')\nprint('        V          ')\nprint('(rows, columns) =', step_meta.out_df_shape)\n\n(rows, columns) = (5, 5)\n        |          \n        V          \n(rows, columns) = (4, 5)\n\n\n\nprint('(rows, columns) =', step_meta.in_df_shape)\nprint(' ↓ '*8)\nprint('(rows, columns) =', step_meta.out_df_shape)\n\n(rows, columns) = (5, 5)\n ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓ \n(rows, columns) = (4, 5)\n\n\n\nin_str = f\"{step_meta.in_df_shape[0]} rows, {step_meta.in_df_shape[1]} columns\"\nprint(in_str)\nprint('↓ ↓ ↓'.center(len(in_str), ' '))\nprint(f\"{step_meta.out_df_shape[0]} rows, {step_meta.out_df_shape[1]} columns\")\n\n5 rows, 5 columns\n      ↓ ↓ ↓      \n4 rows, 5 columns\n\n\nis there a convenietn way to space out a number of strings over a specific length?\n\n🤖Reply🤖\nYou could use string formatting with padding! Here are a couple of approaches:\n1. Using f-strings with alignment:\ns1, s2, s3 = \"5 rows\", \"4 columns\", \"time: 1.2ms\"\ntotal_width = 50\nprint(f\"{s1:&lt;{total_width//3}}{s2:&lt;{total_width//3}}{s3}\")\n2. Using str.ljust() / str.center() / str.rjust():\nwidth = 20\nprint(s1.ljust(width) + s2.center(width) + s3.rjust(width))\n3. For evenly spacing multiple strings, you could calculate spacing:\ndef space_strings(strings, total_width):\n    gap = (total_width - sum(len(s) for s in strings)) // (len(strings) - 1)\n    return (' ' * gap).join(strings)\nWhich approach fits what you’re trying to do with your pipeline display?\n\ns1, s2, s3 = \"5 rows\", \"4 columns\", \"time: 1.2ms\"\ntotal_width = 50\nprint(f\"{s1:&lt;{total_width//3}}{s2:&lt;{total_width//3}}{s3}\")\n\n5 rows          4 columns       time: 1.2ms\n\n\n\nwidth = 20\nprint(s1.ljust(width) + s2.center(width) + s3.rjust(width))\n\n5 rows                   4 columns               time: 1.2ms\n\n\n\nsource\n\n\nspace_strings\n\ndef space_strings(\n    strings, total_width\n):\n\n\nspace_strings(['|', '|', '|'], 20)\n\n'|        |        |'\n\n\n\nlen(space_strings(['|', '|', '|'], 20))\n\n19\n\n\n\nin_str = f\"{step_meta.in_df_shape[0]} rows, {step_meta.in_df_shape[1]} columns\"\nprint(in_str)\nprint(space_strings(['↓','↓','↓'], len(in_str)))\nprint(f\"{step_meta.out_df_shape[0]} rows, {step_meta.out_df_shape[1]} columns\")\n\n5 rows, 5 columns\n↓       ↓       ↓\n4 rows, 5 columns\n\n\n\nin_rows, in_cols = step_meta.in_df_shape\nout_rows, out_cols = step_meta.out_df_shape\n\nin_str = f\"{in_rows} rows, {in_cols} columns\"\nprint(in_str)\nprint(space_strings(['↓','↓','↓'], len(in_str)))\n\nprint(f'{str(out_rows-in_rows).center(len(in_str)//2)}', f'{str(out_cols-in_cols).center(len(in_str)//2)}')\n\nprint(space_strings(['↓','↓','↓'], len(in_str)))\nprint(f\"{out_rows} rows, {out_cols} columns\")\n\n5 rows, 5 columns\n↓       ↓       ↓\n   -1       0    \n↓       ↓       ↓\n4 rows, 5 columns\n\n\n\nin_rows, in_cols = step_meta.in_df_shape\nout_rows, out_cols = step_meta.out_df_shape\ndiff_rows, diff_cols = out_rows - in_rows, out_cols - in_cols\n\ndiff_rows_str = f\"{diff_rows:+d}\" if diff_rows != 0 else \"0\"\ndiff_cols_str = f\"{diff_cols:+d}\" if diff_cols != 0 else \"0\"\n\n# Right-align each column\nrow_width = max(len(str(in_rows)), len(str(out_rows)), len(diff_rows_str))\ncol_width = max(len(str(in_cols)), len(str(out_cols)), len(diff_cols_str))\n\nprint(f\"Input:  {in_rows:&gt;{row_width}} rows, {in_cols:&gt;{col_width}} cols\")\nprint(f\"        {' '*row_width}   ↓   {' '*col_width}   ↓\")\nprint(f\"Diff:   {diff_rows_str:&gt;{row_width}} rows, {diff_cols_str:&gt;{col_width}} cols\")\nprint(f\"        {' '*row_width}   ↓   {' '*col_width}   ↓\")\nprint(f\"Output: {out_rows:&gt;{row_width}} rows, {out_cols:&gt;{col_width}} cols\")\n\nInput:   5 rows, 5 cols\n             ↓       ↓\nDiff:   -1 rows, 0 cols\n             ↓       ↓\nOutput:  4 rows, 5 cols\n\n\n\nprint(f\"\"\"\nInput:  {in_rows:&gt;{row_width}} rows, {in_cols:&gt;{col_width}} cols\n        {' '*row_width}   ↓   {' '*col_width}   ↓\nDiff:   {diff_rows_str:&gt;{row_width}} rows, {diff_cols_str:&gt;{col_width}} cols\n        {' '*row_width}   ↓   {' '*col_width}   ↓\nOutput: {out_rows:&gt;{row_width}} rows, {out_cols:&gt;{col_width}} cols\n\"\"\")\n\n\nInput:   5 rows, 5 cols\n             ↓       ↓\nDiff:   -1 rows, 0 cols\n             ↓       ↓\nOutput:  4 rows, 5 cols\n\n\n\n\nsource\n\n\nprint_shape_change\n\ndef print_shape_change(\n    step_meta:StepMeta\n):\n\n\nprint_shape_change(step_meta)\n\n\n        Input:   5 rows, 5 cols\n                     ↓       ↓\n        Diff:   -1 rows, 0 cols\n                     ↓       ↓\n        Output:  4 rows, 5 cols",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "etl.html#print-docstring",
+    "href": "etl.html#print-docstring",
+    "title": "ETL",
+    "section": "print docstring",
+    "text": "print docstring\n\n@track\ndef my_func():\n    \"\"\"This is the docstring.\"\"\"\n    pass\n\nprint(my_func.__doc__)\n\nThis is the docstring.\n\n\n\nsource\n\nprint_step_description\n\ndef print_step_description(\n    step_meta:StepMeta\n):\n\n\nprint_step_description(step_meta)\n\n'''Exclude products which are Widget C'''",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "etl.html#print-all-function",
+    "href": "etl.html#print-all-function",
+    "title": "ETL",
+    "section": "print all function",
+    "text": "print all function\n\nsource\n\nprint_step_info\n\ndef print_step_info(\n    step_meta:StepMeta\n):\n\n\nprint_step_info(step_meta)\n\n*************** filter_products ***************\n'''Exclude products which are Widget C'''\n\n\nTotal Time: 1.29 ms\n\nStart: 2026-01-21 15:36:59.108163\n  End: 2026-01-21 15:36:59.108396\n\nInput DataFrame:\n  order_id   product quantity defects production_time\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n3      104  Widget C       20       0              80\n4      105  Widget B       45       2             110\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n2      103  Widget A       75       3             150\n3      104  Widget C       20       0              80\n4      105  Widget B       45       2             110\n\n        Input:   5 rows, 5 cols\n                     ↓       ↓\n        Diff:   -1 rows, 0 cols\n                     ↓       ↓\n        Output:  4 rows, 5 cols\n        \nOutput DataFrame:\n  order_id   product quantity defects production_time\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n3      104  Widget C       20       0              80\n4      105  Widget B       45       2             110\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n2      103  Widget A       75       3             150\n3      104  Widget C       20       0              80\n4      105  Widget B       45       2             110",
+    "crumbs": [
+      "ETL"
+    ]
+  },
+  {
+    "objectID": "core.html",
+    "href": "core.html",
+    "title": "core",
+    "section": "",
+    "text": "source\n\n\n\ndef move_columns(\n    df:DataFrame, # Input\n    cols_to_move:str, # Single\n    pos:int, # Target\n)-&gt;DataFrame:\n\nMove one or more columns to a specified position in a DataFrame.\n\ndf = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})\ndf\n\n\n\n\n\n\n\n\nA\nB\nC\n\n\n\n\n0\n1\n4\n7\n\n\n1\n2\n5\n8\n\n\n2\n3\n6\n9\n\n\n\n\n\n\n\n\nmove_columns(df, 'C', 0)\n\n\n\n\n\n\n\n\nC\nA\nB\n\n\n\n\n0\n7\n1\n4\n\n\n1\n8\n2\n5\n\n\n2\n9\n3\n6\n\n\n\n\n\n\n\n\nsample_string = 'KnotenNr. der Stücklistenposition'\n\n\nsample_string = sample_string.lower()\nsample_string\n\n'knotennr. der stücklistenposition'\n\n\n\n[c for c in sample_string][:10]\n\n['k', 'n', 'o', 't', 'e', 'n', 'n', 'r', '.', ' ']\n\n\n\n[c.isalnum() for c in sample_string][:10]\n\n[True, True, True, True, True, True, True, True, False, False]\n\n\n\n[c if c.isalnum() else '_' for c in sample_string][:10]\n\n['k', 'n', 'o', 't', 'e', 'n', 'n', 'r', '_', '_']\n\n\n\nsample_string = \"\".join([c if c.isalnum() else '_' for c in sample_string])\nsample_string\n\n'knotennr__der_stücklistenposition'\n\n\n\nsample_string.split('_')\n\n['knotennr', '', 'der', 'stücklistenposition']\n\n\n\n[o for o in filter(None, sample_string.split('_'))]\n\n['knotennr', 'der', 'stücklistenposition']\n\n\n\n'_'.join(filter(None,sample_string.split('_')))\n\n'knotennr_der_stücklistenposition'\n\n\n\nsource\n\n\n\n\ndef clean_string(\n    input_string:str\n):\n\nCleans input_string\n\nclean_string(sample_string)\n\n'knotennr_der_stücklistenposition'\n\n\n\nsource\n\n\n\n\ndef clean_col_names(\n    df:DataFrame\n)-&gt;DataFrame:\n\nReturns df with clean column names by using clean_string on each column name.\n\ndf.head(2)\n\n\n\n\n\n\n\n\nCust_ID.\nOrder--Date\nPrdct.Name!\nQTY___Ordered\nUnit$Price\n\n\n\n\n0\n101\n2024-02-01\nWidget A\n10\n99.99\n\n\n1\n102\n2024-02-02\nWidget B\n20\n149.99\n\n\n\n\n\n\n\n\ndf = clean_col_names(df)\ndf.head(2)\n\n\n\n\n\n\n\n\ncust_id\norder_date\nprdct_name\nqty_ordered\nunit_price\n\n\n\n\n0\n101\n2024-02-01\nWidget A\n10\n99.99\n\n\n1\n102\n2024-02-02\nWidget B\n20\n149.99",
+    "crumbs": [
+      "core"
+    ]
+  },
+  {
+    "objectID": "core.html#column-helpers",
+    "href": "core.html#column-helpers",
+    "title": "core",
+    "section": "",
+    "text": "source\n\n\n\ndef move_columns(\n    df:DataFrame, # Input\n    cols_to_move:str, # Single\n    pos:int, # Target\n)-&gt;DataFrame:\n\nMove one or more columns to a specified position in a DataFrame.\n\ndf = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})\ndf\n\n\n\n\n\n\n\n\nA\nB\nC\n\n\n\n\n0\n1\n4\n7\n\n\n1\n2\n5\n8\n\n\n2\n3\n6\n9\n\n\n\n\n\n\n\n\nmove_columns(df, 'C', 0)\n\n\n\n\n\n\n\n\nC\nA\nB\n\n\n\n\n0\n7\n1\n4\n\n\n1\n8\n2\n5\n\n\n2\n9\n3\n6\n\n\n\n\n\n\n\n\nsample_string = 'KnotenNr. der Stücklistenposition'\n\n\nsample_string = sample_string.lower()\nsample_string\n\n'knotennr. der stücklistenposition'\n\n\n\n[c for c in sample_string][:10]\n\n['k', 'n', 'o', 't', 'e', 'n', 'n', 'r', '.', ' ']\n\n\n\n[c.isalnum() for c in sample_string][:10]\n\n[True, True, True, True, True, True, True, True, False, False]\n\n\n\n[c if c.isalnum() else '_' for c in sample_string][:10]\n\n['k', 'n', 'o', 't', 'e', 'n', 'n', 'r', '_', '_']\n\n\n\nsample_string = \"\".join([c if c.isalnum() else '_' for c in sample_string])\nsample_string\n\n'knotennr__der_stücklistenposition'\n\n\n\nsample_string.split('_')\n\n['knotennr', '', 'der', 'stücklistenposition']\n\n\n\n[o for o in filter(None, sample_string.split('_'))]\n\n['knotennr', 'der', 'stücklistenposition']\n\n\n\n'_'.join(filter(None,sample_string.split('_')))\n\n'knotennr_der_stücklistenposition'\n\n\n\nsource\n\n\n\n\ndef clean_string(\n    input_string:str\n):\n\nCleans input_string\n\nclean_string(sample_string)\n\n'knotennr_der_stücklistenposition'\n\n\n\nsource\n\n\n\n\ndef clean_col_names(\n    df:DataFrame\n)-&gt;DataFrame:\n\nReturns df with clean column names by using clean_string on each column name.\n\ndf.head(2)\n\n\n\n\n\n\n\n\nCust_ID.\nOrder--Date\nPrdct.Name!\nQTY___Ordered\nUnit$Price\n\n\n\n\n0\n101\n2024-02-01\nWidget A\n10\n99.99\n\n\n1\n102\n2024-02-02\nWidget B\n20\n149.99\n\n\n\n\n\n\n\n\ndf = clean_col_names(df)\ndf.head(2)\n\n\n\n\n\n\n\n\ncust_id\norder_date\nprdct_name\nqty_ordered\nunit_price\n\n\n\n\n0\n101\n2024-02-01\nWidget A\n10\n99.99\n\n\n1\n102\n2024-02-02\nWidget B\n20\n149.99",
+    "crumbs": [
+      "core"
+    ]
+  },
+  {
+    "objectID": "core.html#validate-functions",
+    "href": "core.html#validate-functions",
+    "title": "core",
+    "section": "validate functions",
+    "text": "validate functions\nTests to check if we use out of scope variables inside function\n\na = 10\n\n\ndef my_sum(b):\n    return a + b\n\nmy_sum(32)\n\n42\n\n\n\nimport inspect\n\n\n# inspect.getclosurevars(eval(\"my_sum\"))\ninspect.getclosurevars(my_sum)\n\nClosureVars(nonlocals={}, globals={'a': 10}, builtins={}, unbound=set())\n\n\n\ndef my_callback(result):\n    print(\"Cell just finished running!\")\n\nget_ipython().events.register('post_run_cell', my_callback)\n\nCell just finished running!\n\n\n\nget_ipython().events.unregister('post_run_cell', my_callback)\n\n\nimport ast\n\nFunctions defined: ['check_funcs']\n\n\n\ndef check_funcs(result):\n    tree = ast.parse(result.info.raw_cell)\n    func_names = [node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]\n    if func_names:\n        print(f\"Functions defined: {func_names}\")\n\n\nget_ipython().events.register('post_run_cell', check_funcs)\n\n\nget_ipython().events.unregister('post_run_cell', check_funcs)\n\n\ndef check_funcs(result):\n    tree = ast.parse(result.info.raw_cell)\n    func_names = [node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]\n    if func_names:\n        print(f\"Functions defined: {func_names}\")\n\nFunctions defined: ['check_funcs']\n\n\n\nget_ipython().events.register('post_run_cell', check_funcs)\n\n\nget_ipython().events.unregister('post_run_cell', check_funcs)\n\n\nimport ast\nimport inspect\n\n\ndef check_global_deps(result):\n    tree = ast.parse(result.info.raw_cell)\n    func_names = [node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]\n    \n    ns = get_ipython().user_ns\n    for name in func_names:\n        if name in ns:\n            func = ns[name]\n            cv = inspect.getclosurevars(func)\n            if cv.globals:\n                print(f\"⚠️  '{name}' depends on global variables: {list(cv.globals.keys())}\")\n\n\nget_ipython().events.register('post_run_cell', check_global_deps)\n\n\ndef my_sum(b):\n    return a + b\n\nmy_sum(32)\n\n42\n\n\n⚠️  'my_sum' depends on global variables: ['a']\n\n\n\nget_ipython().events.unregister('post_run_cell', check_global_deps)",
+    "crumbs": [
+      "core"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "mis_analytics",
+    "section": "",
+    "text": "This file will become your README and also the index of your documentation.",
+    "crumbs": [
+      "mis_analytics"
+    ]
+  },
+  {
+    "objectID": "index.html#developer-guide",
+    "href": "index.html#developer-guide",
+    "title": "mis_analytics",
+    "section": "Developer Guide",
+    "text": "Developer Guide\nIf you are new to using nbdev here are some useful pointers to get you started.\n\nInstall mis_core in Development mode\n# make sure mis_core package is installed in development mode\n$ pip install -e .\n\n# make changes under nbs/ directory\n# ...\n\n# compile to have changes apply to mis_core\n$ nbdev_prepare",
+    "crumbs": [
+      "mis_analytics"
+    ]
+  },
+  {
+    "objectID": "index.html#usage",
+    "href": "index.html#usage",
+    "title": "mis_analytics",
+    "section": "Usage",
+    "text": "Usage\n\ndf = get_demo_data()\ndf\n\n\n\n\n\n\n\n\norder_id\nproduct\nquantity\ndefects\nproduction_time\n\n\n\n\n0\n101\nWidget A\n50\n2\n120\n\n\n1\n102\nWidget B\n30\n1\n95\n\n\n2\n103\nWidget A\n75\n3\n150\n\n\n3\n104\nWidget C\n20\n0\n80\n\n\n4\n105\nWidget B\n45\n2\n110\n\n\n\n\n\n\n\n\n@track\ndef aggregate_by_product(df):\n    return df.groupby([\"product\"])[[\"quantity\", \"defects\", \"production_time\"]].sum()\n\n\n@track\ndef filter_products(df):\n    return df[df[\"product\"] != \"Widget C\"]\n\n\nsteps = [\n    (filter_products, {'vrbs':True}),\n    (aggregate_by_product, {}),\n]\n\n\n_df = pipeline(df, steps, vrbs_default=False)\n\n*************** filter_products ***************\nTotal Time: 1.75 ms\n\nStart: 2025-12-18 16:05:55.759474\n  End: 2025-12-18 16:05:55.761225\n\nInput DataFrame:\n  order_id   product quantity defects production_time\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n3      104  Widget C       20       0              80\n1      102  Widget B       30       1              95\n4      105  Widget B       45       2             110\n0      101  Widget A       50       2             120\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n2      103  Widget A       75       3             150\n3      104  Widget C       20       0              80\n4      105  Widget B       45       2             110\n\n        Input:   5 rows, 5 cols\n                     ↓       ↓\n        Diff:   -1 rows, 0 cols\n                     ↓       ↓\n        Output:  4 rows, 5 cols\n        \nOutput DataFrame:\n  order_id   product quantity defects production_time\n0      101  Widget A       50       2             120\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n         :         :        :       :               :\n4      105  Widget B       45       2             110\n0      101  Widget A       50       2             120\n2      103  Widget A       75       3             150\n1      102  Widget B       30       1              95\n         :         :        :       :               :\n1      102  Widget B       30       1              95\n2      103  Widget A       75       3             150\n4      105  Widget B       45       2             110\n\n\n\n\n\nInstallation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/MIS-Analytics/mis_analytics.git\nor from pypi\n$ pip install mis_analytics\n\n\nDocumentation\nDocumentation can be found hosted on this GitHub repository’s pages. Additionally you can find package manager specific guidelines on pypi.",
+    "crumbs": [
+      "mis_analytics"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "mis_analytics",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2",
+    "crumbs": [
+      "mis_analytics"
+    ]
+  },
+  {
+    "objectID": "desapher.html",
+    "href": "desapher.html",
+    "title": "DeSAPher",
+    "section": "",
+    "text": "Working with SAP systems often means dealing with hundreds of tables with cryptic names like MARA, VBAK, or MAKT. Understanding what these tables contain and how they relate to each other traditionally requires extensive documentation lookup or SAP expertise.",
+    "crumbs": [
+      "DeSAPher"
+    ]
+  },
+  {
+    "objectID": "desapher.html#the-problem",
+    "href": "desapher.html#the-problem",
+    "title": "DeSAPher",
+    "section": "",
+    "text": "Working with SAP systems often means dealing with hundreds of tables with cryptic names like MARA, VBAK, or MAKT. Understanding what these tables contain and how they relate to each other traditionally requires extensive documentation lookup or SAP expertise.",
+    "crumbs": [
+      "DeSAPher"
+    ]
+  },
+  {
+    "objectID": "desapher.html#our-solution",
+    "href": "desapher.html#our-solution",
+    "title": "DeSAPher",
+    "section": "Our Solution",
+    "text": "Our Solution\nWe created a tool that automatically fetches and structures SAP table definitions from online documentation. This gives us instant access to: - Field names and their meanings - Data types and lengths - Relationships between tables (via check tables) - Comprehensive descriptions of each field - Table names and descriptions",
+    "crumbs": [
+      "DeSAPher"
+    ]
+  },
+  {
+    "objectID": "desapher.html#benefits",
+    "href": "desapher.html#benefits",
+    "title": "DeSAPher",
+    "section": "Benefits",
+    "text": "Benefits\n\nTime Saving: No more manual documentation lookups\nBetter Understanding: Clear visibility of table structures and meanings\nEasier Data Analysis: Quick reference for field names and their purposes\nKnowledge Sharing: Makes SAP data structures more accessible to team members",
+    "crumbs": [
+      "DeSAPher"
+    ]
+  },
+  {
+    "objectID": "desapher.html#future-directions",
+    "href": "desapher.html#future-directions",
+    "title": "DeSAPher",
+    "section": "Future Directions",
+    "text": "Future Directions\n\n1. Interactive Interface\n\nBuild a searchable interface for quick table/field lookups\nImplement full-text search across descriptions\nAdd semantic search using LLMs to find relevant tables by describing needs in plain English\n\n\n\n2. Visual Data Model\n\nCreate interactive graph visualizations showing table relationships\nHighlight primary/foreign key connections\nEnable visual exploration of the SAP data model\n\n\n\n3. AI-Powered Data Assistant\n\nUse LLMs with our structured documentation as context\nGenerate SQL queries from natural language questions\nSuggest relevant tables for specific business questions\nProvide data model explanations in plain language",
+    "crumbs": [
+      "DeSAPher"
+    ]
+  },
+  {
+    "objectID": "desapher.html#steps",
+    "href": "desapher.html#steps",
+    "title": "DeSAPher",
+    "section": "Steps",
+    "text": "Steps\n\nScrape column description for one table (for example, MARA)\nBring it in to a easily serachable format\nApply process to all tables\n\n\nScrape column description for one table (for example, MARA)\n\nurl = 'https://www.sapdatasheet.org/abap/tabl/mara.html'\n\n\nresponse = httpx.get(url)\nresponse\n\n\nsample_text = '''\n&lt;table class=\"table table-sm\"&gt;\n                                &lt;caption class=\"text-right sapds-alv\"&gt;\n                                    &lt;a href=\"/download/abap-tabl-component.php?format=csv&amp;tabname=MARA\" title=\"Download components as CSV file.\nThe downloaded file contains more columns than displayed here.\" target=\"_blank\"&gt;\n                                        &lt;img src=\"/abap/icon/s_wdvtxe.gif\"&gt;&lt;/a&gt; &nbsp;\n                                    &lt;a href=\"/download/abap-tabl-component.php?format=xls&amp;tabname=MARA\" title=\"Download components as Excel 97-2003 Worksheet (.xls) file.\nThe downloaded file contains more columns than displayed here.\" target=\"_blank\"&gt;\n                                        &lt;img src=\"/abap/icon/s_x__xls.gif\"&gt;&lt;/a&gt; &nbsp;\n                                    &lt;a href=\"/download/abap-tabl-component.php?format=xlsx&amp;tabname=MARA\" title=\"Download components as Excel Open XML Format Spreadsheet (.xlsx) file.\nThe downloaded file contains more columns than displayed here.\" target=\"_blank\"&gt;\n                                        &lt;img src=\"/abap/icon/s_lisvie.gif\"&gt;&lt;/a&gt; &nbsp;\n                                &lt;/caption&gt;\n                                &lt;thead&gt;\n                                    &lt;tr&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; &lt;img src=\"/abap/icon/s_b_pvre.gif\"&gt; &lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Field &lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Key &lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Data Element&lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Domain&lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Data&lt;br&gt;Type&lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Length&lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Decimal&lt;br&gt;Places&lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Short Description&lt;/th&gt;\n                                        &lt;th class=\"sapds-alv\"&gt; Check&lt;br&gt;table&lt;/th&gt;\n                                    &lt;/tr&gt;\n                                &lt;/thead&gt;\n                                &lt;tbody&gt;\n                                                                            &lt;tr&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a id=\"FIELD_MANDT\"&gt;&lt;/a&gt; 1 &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;img src=\"/abap/icon/s_struct.gif\"&gt;                                                 &lt;a href=\"/abap/tabl/mara-mandt.html\" title=\"MANDT\" target=\"_blank\"&gt;MANDT&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv text-center\"&gt; &lt;input type=\"checkbox\" name=\"field_MANDT\" disabled=\"disabled\" checked=\"checked\"&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/dtel/mandt.html\" title=\"Client\" target=\"_blank\"&gt;MANDT&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/doma/mandt.html\" title=\"Client (key field in client-specific tables)\" target=\"_blank\"&gt;MANDT&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/doma/datatype.html#values\" title=\"Dictionary Data Type\" target=\"_blank\"&gt;CLNT&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv text-right\"&gt; 3 &nbsp; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv text-right\"&gt; 0 &nbsp; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; Client &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/tabl/t000.html\" title=\"Clients\" target=\"_blank\"&gt;T000&lt;/a&gt; &lt;/td&gt;\n                                        &lt;/tr&gt;\n                                                                            &lt;tr&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a id=\"FIELD_FASHGRD\"&gt;&lt;/a&gt; 239 &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;img src=\"/abap/icon/s_struct.gif\"&gt;                                                 &lt;a href=\"/abap/tabl/mara-fashgrd.html\" title=\"FASHGRD\" target=\"_blank\"&gt;FASHGRD&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv text-center\"&gt; &lt;input type=\"checkbox\" name=\"field_FASHGRD\" disabled=\"disabled\"&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/dtel/fashgrd.html\" title=\"Fashion Grade\" target=\"_blank\"&gt;FASHGRD&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/doma/fashgrd.html\" title=\"Fashion Grade\" target=\"_blank\"&gt;FASHGRD&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/doma/datatype.html#values\" title=\"Dictionary Data Type\" target=\"_blank\"&gt;CHAR&lt;/a&gt; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv text-right\"&gt; 4 &nbsp; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv text-right\"&gt; 0 &nbsp; &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; Fashion Grade &lt;/td&gt;\n                                            &lt;td class=\"sapds-alv\"&gt; &lt;a href=\"/abap/tabl/t6wfg.html\" title=\"Degree of Fashion\" target=\"_blank\"&gt;T6WFG&lt;/a&gt; &lt;/td&gt;\n                                        &lt;/tr&gt;\n                                                                    &lt;/tbody&gt;\n                            &lt;/table&gt;'''\n\n\nsoup = BeautifulSoup(response.text, 'lxml')\ntable = soup.find('table', class_='table table-sm')\n\n\n\nBring it in to a easily serachable format\n\nheaders = [th.text.strip() for th in table.find('thead').find_all('th')]\nheaders\n\n\ntrs = [tr for tr in table.find('tbody').find_all('tr')]\ntrs[0]\n\n\ntrs[1]\n\n\n[td.text.strip() for td in trs[1].find_all('td')]\n\n\nrows = []\nfor tr in table.find('tbody').find_all('tr'):\n    row = [td.text.strip() for td in tr.find_all('td')]\n    rows.append(row)\n\nrows[10]\n\n\ndf = pd.DataFrame(rows, columns=headers)\ndf.head()\n\n\nsource\n\n\nget_sap_table_structure\n\ndef get_sap_table_structure(\n    url\n):\n\nScrapes SAP table structure from sapdatasheet.org and returns a pandas DataFrame\n\ndf = get_sap_table_structure(url)\ndf.head()\n\n\nurl_2 = 'https://www.sapdatasheet.org/abap/tabl/makt.html'\n\ndf_2 = get_sap_table_structure(url_2)\ndf_2\n\n\n\nApply process to all tables\n\nsource\n\n\nget_sap_table_url\n\ndef get_sap_table_url(\n    table_name\n):\n\nConstructs sapdatasheet.org URL from SAP table name\n\nget_sap_table_url('VBAK')\n\n\nsource\n\n\nget_sap_tables_structure\n\ndef get_sap_tables_structure(\n    tables\n):\n\nGets structure for multiple SAP tables and combines them into one DataFrame with a column indicating the source table\n\nsource\n\n\nget_sap_table_structure\n\ndef get_sap_table_structure(\n    url\n):\n\nScrapes SAP table structure from sapdatasheet.org and returns a pandas DataFrame Returns None if table not found or other error occurs\n\nsource\n\n\nget_sap_tables_structure\n\ndef get_sap_tables_structure(\n    tables\n):\n\nGets structure for multiple SAP tables and combines them into one DataFrame with a column indicating the source table\n\ntables = ['MARC', 'MARD', 'MARM', 'MBEW']\n\n\ndf = get_sap_tables_structure(tables)\ndf.sample(10)\n\n\n\nLet’s also grab the table description for each table.\n\nurl\n\n\nsource\n\n\nget_sap_table_description\n\ndef get_sap_table_description(\n    url\n):\n\nScrapes SAP table description from sapdatasheet.org Returns None if not found or error occurs\n\nget_sap_table_description(url)\n\n\nsource\n\n\nget_sap_tables_structure\n\ndef get_sap_tables_structure(\n    tables\n):\n\nGets structure for multiple SAP tables and combines them into one DataFrame with a column indicating the source table\n\nsap_sheet = get_sap_tables_structure(tables)\nsap_sheet.sample(10)\n\n\nsap_sheet['Table Description'].unique()\n\n\ndata = {\n    'MANDT': [100, 100, 100],\n    'MATNR': ['MAT001', 'MAT002', 'MAT003'],\n    'WERKS': ['1000', '1000', '2000'],\n    'PSTAT': ['KVEB', 'KVEB', 'KVEB'],\n    'LVORM': [None, None, None],\n    'BWTTY': [None, None, None],\n    'MMSTA': ['1', '1', '9'],\n    'MMSTD': [20200101, 20200115, 20210201],\n    'MAABC': ['A', 'B', None],\n    'KZKRI': [None, None, None],\n    'EKGRP': ['100', '100', '200'],\n    'DISPO': ['001', '001', '002'],\n    'BESKZ': ['E', 'E', 'X'],\n    'SOBSL': [None, None, None],\n    'EISBE': [10.0, 20.0, 15.0],\n    'MABST': [100.0, 200.0, 150.0],\n    'ALTSL': [None, None, None],\n    'KZAUS': [None, None, None],\n    'AUSDT': [0, 0, 0],\n    'NFMAT': [None, None, None],\n    'KZBED': [None, 'T', None],\n    'RGEKZ': [None, None, None],\n    'FEVOR': ['G01', None, 'G02'],\n    'BASMG': [1.0, 1.0, 1.0],\n    'STAWN': ['84141025', '84141025', '84148073'],\n    'HERKL': ['DE', 'DE', 'US'],\n    'HERKR': ['05', '05', '16'],\n    'EXPME': ['ST', 'ST', 'ST'],\n    'MTVER': ['1', '1', '1'],\n    'PRCTR': ['PC100', 'PC100', 'PC200'],\n    'VERKZ': [None, 'X', None],\n    'STLAL': [None, None, None],\n    'STLAN': [None, None, None],\n    'PLNNR': [None, None, None],\n    'APLAL': [None, None, None],\n    'FRTME': [None, None, None],\n    'LGPRO': ['1001', '1001', '2001'],\n    'DISGR': ['2000', '2000', '6000'],\n    'SERNP': [None, None, None],\n    'PREFE': [None, None, None],\n    'PRENE': [None, None, None],\n    'SCHGT': [None, None, None],\n    'MCRUE': ['X', 'X', 'X'],\n    'LFGJA': [2024, 2024, 2025],\n    'EISLO': [0.0, 0.0, 0.0],\n    'TARGET_STOCK': [50.0, 100.0, 75.0],\n    'SCM_SCOST': [0.0, 0.0, 0.0],\n    'SCM_LSUOM': [None, None, None],\n    'SCM_STRA1': [None, None, None],\n}\n\ndf_marc = pd.DataFrame(data)\ndf_marc\n\n\nsource\n\n\nconvert_sap_types\n\ndef convert_sap_types(\n    df:DataFrame, sap_sheet:DataFrame\n)-&gt;DataFrame:\n\nConverts the columns of the ‘df’ DataFrame to the correct data types based on ‘sap_sheet’.\n:param df: Pandas DataFrame containing SAP table data (e.g., “df”). :param sap_sheet: Pandas DataFrame containing SAP metadata with column data types. :return: Converted Pandas DataFrame.\n\ndf_marc.info()\n\n\ndf_marc_converted = convert_sap_types(df_marc, sap_sheet)\ndf_marc_converted.head()\n\n\ndf_marc_converted.info()\n\n\nsource\n\n\nrename_sap_columns\n\ndef rename_sap_columns(\n    df:DataFrame, sap_sheet:DataFrame\n)-&gt;DataFrame:\n\nRenames the columns in the ‘df’ DataFrame using the ‘Short Description’ from ‘sap_sheet’. If a column is not found in ‘sap_sheet’, it remains unchanged.\n:param df: Pandas DataFrame containing SAP table data (e.g., “df”). :param sap_sheet: Pandas DataFrame containing SAP metadata with column names and short descriptions. :return: DataFrame with renamed columns.\n\ndf_marc_converted = rename_sap_columns(df_marc_converted, sap_sheet)\ndf_marc_converted.info()\n\n\ndf_marc_converted = clean_col_names(df_marc_converted)\ndf_marc_converted.info()",
+    "crumbs": [
+      "DeSAPher"
+    ]
+  }
+]
