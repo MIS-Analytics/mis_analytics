@@ -128,22 +128,6 @@ def get_sap_table_description(url):
         print(f"Error getting description from {url}: {str(e)}")
         return None
 
-# %% ../nbs/11_deSAPher.ipynb #968d8f29
-def get_sap_tables_structure(tables):
-    """ Gets structure for multiple SAP tables and combines them into one DataFrame with a column indicating the source table """
-    dfs = []
-    for table in tables:
-        url = get_sap_table_url(table)
-        df = get_sap_table_structure(url)
-        if df is not None:
-            df['Table'] = table
-            df['Table Description'] = get_sap_table_description(url)
-            dfs.append(df)
-    
-    if not dfs:
-        return None
-    return pd.concat(dfs, ignore_index=True)
-
 # %% ../nbs/11_deSAPher.ipynb #7b67c9fb
 sap_to_pandas_dtype = {
     "CLNT": "str",               # Client (typically a 3-character fixed string)
