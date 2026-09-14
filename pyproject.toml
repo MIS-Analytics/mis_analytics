@@ -15,12 +15,14 @@ classifiers = ["Natural Language :: English", "Intended Audience :: Developers",
 dependencies = [
     'pandas',
     'numpy',
-    'httpx',
-    'beautifulsoup4',
-    'dialoghelper',
-    'fastcore',
-    'nbdev',
     "polars>=1.40.0",
+]
+
+[project.optional-dependencies]
+desapher = [
+    "httpx",
+    "beautifulsoup4",
+    "lxml",
 ]
 
 [project.urls]
@@ -37,3 +39,10 @@ version = {attr = "mis_analytics.__version__"}
 include = ["mis_analytics"]
 
 [tool.nbdev]
+
+[dependency-groups]
+dev = [
+    "dialoghelper>=0.2.43",
+    "fastcore>=2.2.27",
+    "nbdev>=3.3.18",
+]
