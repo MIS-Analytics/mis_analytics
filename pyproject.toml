@@ -16,6 +16,7 @@ dependencies = [
     'pandas',
     'numpy',
     "polars>=1.40.0",
+    "pyarrow>=20"
 ]
 
 [project.optional-dependencies]
@@ -50,4 +51,5 @@ dev = [
     "dialoghelper>=0.2.43",
     "fastcore>=2.2.27",
     "nbdev>=3.3.18",
+    "twine>=7.0.0",
 ]
