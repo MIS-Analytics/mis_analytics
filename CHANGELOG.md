@@ -1,10 +1,10 @@
 # Release notes
 
-Compatibility with pandas >= 3.0 new str type.
+ETL funcionality compatible with polars
 
 <!-- do not remove -->
 
+## 0.0.5
+
+
 ## 0.0.2
-
-
-
