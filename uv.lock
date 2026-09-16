@@ -1627,6 +1627,11 @@ desapher = [
     { name = "httpx" },
     { name = "lxml" },
 ]
+dev = [
+    { name = "dialoghelper" },
+    { name = "fastcore" },
+    { name = "nbdev" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -1638,13 +1643,16 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", marker = "extra == 'desapher'" },
+    { name = "dialoghelper", marker = "extra == 'dev'", specifier = ">=0.2.43" },
+    { name = "fastcore", marker = "extra == 'dev'", specifier = ">=2.2.27" },
     { name = "httpx", marker = "extra == 'desapher'" },
     { name = "lxml", marker = "extra == 'desapher'" },
+    { name = "nbdev", marker = "extra == 'dev'", specifier = ">=3.3.18" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "polars", specifier = ">=1.40.0" },
 ]
-provides-extras = ["desapher"]
+provides-extras = ["desapher", "dev"]
 
 [package.metadata.requires-dev]
 dev = [

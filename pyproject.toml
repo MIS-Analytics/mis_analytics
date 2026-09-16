@@ -24,6 +24,11 @@ desapher = [
     "beautifulsoup4",
     "lxml",
 ]
+dev = [
+    "dialoghelper>=0.2.43",
+    "fastcore>=2.2.27",
+    "nbdev>=3.3.18",
+]
 
 [project.urls]
 Repository = "https://github.com/MIS-Analytics/mis_analytics"
